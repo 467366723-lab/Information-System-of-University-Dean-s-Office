@@ -17,3 +17,10 @@ class Course:
     def from_string(line: str) -> 'Course':
         parts = line.strip().split(',')
         return Course(parts[0], parts[1], int(parts[2]))
+
+    def to_dict(self) -> dict:
+        return {
+            "course_id": self.course_id,
+            "name": self.name,
+            "credits": self.credits
+        }

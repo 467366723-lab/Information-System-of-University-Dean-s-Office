@@ -17,3 +17,10 @@ class Grade:
     def from_string(line: str) -> 'Grade':
         parts = line.strip().split(',')
         return Grade(parts[0], parts[1], float(parts[2]))
+
+    def to_dict(self):
+        return {
+            "student_id": self.student_id,
+            "course_id": self.course_id,
+            "score": round(self.score, 1)
+        }

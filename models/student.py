@@ -19,3 +19,11 @@ class Student:
         """Create student object from text file line"""
         parts = line.strip().split(',')
         return Student(parts[0], parts[1], int(parts[2]))
+
+    def to_dict(self) -> dict:
+        """Convert student object to dictionary for API JSON response"""
+        return {
+            "student_id": self.student_id,
+            "name": self.name,
+            "grade": self.grade
+        }
