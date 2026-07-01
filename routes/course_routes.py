@@ -29,8 +29,9 @@ def add_course():
     if not all(k in data for k in required):
         return jsonify({"error": "Missing required fields: course_id, name, credits"}), 400
 
-    if not isinstance(data["credits"], int) or data["credits"] <= 0:
-        return jsonify({"error": "Credits must be a positive integer"}), 400
+    # Fix: Align credit validation with frontend (1-20)
+    if not isinstance(data["credits"], int) or data["credits"] < 1 or data["credits"] > 20:
+        return jsonify({"error": "Credits must be an integer between 1 and 20"}), 400
 
     new_course = Course(data["course_id"], data["name"], data["credits"])
     ok = course_service.add_course(new_course)
@@ -44,9 +45,9 @@ def add_course():
 def update_course(course_id):
     data = request.get_json()
 
-    # Validate credits if provided
-    if "credits" in data and (not isinstance(data["credits"], int) or data["credits"] <= 0):
-        return jsonify({"error": "Credits must be a positive integer"}), 400
+    # Fix: Align credit validation with frontend (1-20)
+    if "credits" in data and (not isinstance(data["credits"], int) or data["credits"] < 1 or data["credits"] > 20):
+        return jsonify({"error": "Credits must be an integer between 1 and 20"}), 400
 
     success = course_service.update_course(
         course_id,
