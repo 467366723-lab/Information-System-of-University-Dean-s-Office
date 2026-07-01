@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dean's Office Information System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>University Dean's Office Information System</h1>
+        <p class="subtitle">Software Design Course Project - Frontend Client</p>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="students">Students</button>
+            <button class="tab-btn" data-tab="courses">Courses</button>
+            <button class="tab-btn" data-tab="grades">Grades</button>
+        </div>
+
+        <div class="tab-content active" id="students-tab">
+            <h2>Student Management</h2>
+            <div class="form-section">
+                <h3>Add New Student</h3>
+                <div class="form-row">
+                    <label>Student ID:</label>
+                    <input type="text" id="stu-id" placeholder="e.g. S001">
+                </div>
+                <div class="form-row">
+                    <label>Name:</label>
+                    <input type="text" id="stu-name" placeholder="e.g. Alice Smith">
+                </div>
+                <div class="form-row">
+                    <label>Grade:</label>
+                    <input type="number" id="stu-grade" placeholder="e.g. 2024">
+                </div>
+                <button class="btn primary" onclick="addStudent()">Add Student</button>
+            </div>
+            <div class="query-section">
+                <h3>Student List</h3>
+                <button class="btn" onclick="loadStudents()">Refresh List</button>
+                <table id="stu-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Grade</th>
+                            <th>Operation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stu-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="courses-tab">
+            <h2>Course Management</h2>
+            <p style="color:#666">Course module will be completed in next step.</p>
+        </div>
+
+        <div class="tab-content" id="grades-tab">
+            <h2>Grade Management</h2>
+            <p style="color:#666">Grade module will be completed in next step.</p>
+        </div>
+
+        <div id="message-box"></div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
