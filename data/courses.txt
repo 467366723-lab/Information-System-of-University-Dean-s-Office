@@ -1,4 +1,2 @@
 C001,Computer Science Introduction,3
 C002,Advanced Mathematics,4
-C003,English Writing,2C201,Math,4
-C101,Python Programming,3

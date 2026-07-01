@@ -18,6 +18,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         document.getElementById(tabId + '-tab').classList.add('active');
         if (tabId === 'students') loadStudents();
         if (tabId === 'courses') loadCourses();
+        if (tabId === 'grades') loadGrades();
     });
 });
 
@@ -92,7 +93,6 @@ async function deleteStudent(studentId) {
         const res = await fetch(`${API_BASE}/students/${studentId}`, {
             method: 'DELETE'
         });
-        // Fix: Parse backend error message
         const resData = await res.json();
         if (res.status === 200) {
             showMessage('Student deleted successfully', true);
@@ -176,11 +176,97 @@ async function deleteCourse(courseId) {
         const res = await fetch(`${API_BASE}/courses/${courseId}`, {
             method: 'DELETE'
         });
-        // Fix: Parse backend error message
         const resData = await res.json();
         if (res.status === 200) {
             showMessage('Course deleted successfully', true);
             loadCourses();
+        } else {
+            showMessage(resData.error || 'Delete failed', false);
+        }
+    } catch (err) {
+        showMessage('Network error', false);
+    }
+}
+
+async function loadGrades() {
+    try {
+        const res = await fetch(`${API_BASE}/grades`);
+        const data = await res.json();
+        const tbody = document.getElementById('grade-tbody');
+        tbody.innerHTML = '';
+        data.forEach(grade => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${grade.student_id}</td>
+                <td>${grade.course_id}</td>
+                <td>${grade.score}</td>
+                <td><button class="btn danger" onclick="deleteGrade('${grade.student_id}', '${grade.course_id}')">Delete</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        showMessage('Failed to load grades', false);
+    }
+}
+
+async function addGrade() {
+    const stuId = document.getElementById('grade-stu-id').value.trim();
+    const courseId = document.getElementById('grade-course-id').value.trim();
+    const score = document.getElementById('grade-score').value.trim();
+    if (!stuId || !courseId || !score) {
+        showMessage('All fields cannot be empty', false);
+        return;
+    }
+    if (!/^S\d+$/.test(stuId)) {
+        showMessage('Student ID must start with S followed by numbers', false);
+        return;
+    }
+    if (!/^C\d+$/.test(courseId)) {
+        showMessage('Course ID must start with C followed by numbers', false);
+        return;
+    }
+    const scoreNum = parseInt(score);
+    if (isNaN(scoreNum) || scoreNum < 0 || scoreNum > 100) {
+        showMessage('Score must be between 0 and 100', false);
+        return;
+    }
+    try {
+        const res = await fetch(`${API_BASE}/grades`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                student_id: stuId,
+                course_id: courseId,
+                score: scoreNum
+            })
+        });
+        if (res.status === 201) {
+            showMessage('Grade added successfully', true);
+            document.getElementById('grade-stu-id').value = '';
+            document.getElementById('grade-course-id').value = '';
+            document.getElementById('grade-score').value = '';
+            loadGrades();
+        } else if (res.status === 409) {
+            showMessage('Grade record already exists', false);
+        } else {
+            const errData = await res.json();
+            showMessage(errData.error || 'Add failed', false);
+        }
+    } catch (err) {
+        showMessage('Network error', false);
+    }
+}
+
+async function deleteGrade(studentId, courseId) {
+    if (!confirm('Confirm deletion')) return;
+    try {
+        const res = await fetch(`${API_BASE}/grades/${studentId}/${courseId}`, {
+            method: 'DELETE'
+        });
+        const resData = await res.json();
+        if (res.status === 200) {
+            showMessage('Grade deleted successfully', true);
+            loadGrades();
         } else {
             showMessage(resData.error || 'Delete failed', false);
         }

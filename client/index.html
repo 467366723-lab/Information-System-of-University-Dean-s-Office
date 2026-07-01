@@ -89,7 +89,37 @@
 
         <div class="tab-content" id="grades-tab">
             <h2>Grade Management</h2>
-            <p style="color:#666">Grade module will be completed in next step.</p>
+            <div class="form-section">
+                <h3>Add New Grade</h3>
+                <div class="form-row">
+                    <label>Student ID:</label>
+                    <input type="text" id="grade-stu-id" placeholder="e.g. S001">
+                </div>
+                <div class="form-row">
+                    <label>Course ID:</label>
+                    <input type="text" id="grade-course-id" placeholder="e.g. C101">
+                </div>
+                <div class="form-row">
+                    <label>Score:</label>
+                    <input type="number" id="grade-score" placeholder="e.g. 85">
+                </div>
+                <button class="btn primary" onclick="addGrade()">Add Grade</button>
+            </div>
+            <div class="query-section">
+                <h3>Grade List</h3>
+                <button class="btn" onclick="loadGrades()">Refresh List</button>
+                <table id="grade-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Course ID</th>
+                            <th>Score</th>
+                            <th>Operation</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grade-tbody"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="message-box"></div>
