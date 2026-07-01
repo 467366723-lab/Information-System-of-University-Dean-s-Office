@@ -9,6 +9,60 @@ function showMessage(text, isSuccess) {
     }, 3000);
 }
 
+function saveCache(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+function loadCache(key) {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : [];
+}
+
+function renderStudents(data) {
+    const tbody = document.getElementById('stu-tbody');
+    tbody.innerHTML = '';
+    data.forEach(stu => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${stu.student_id}</td>
+            <td>${stu.name}</td>
+            <td>${stu.grade}</td>
+            <td><button class="btn danger" onclick="deleteStudent('${stu.student_id}')">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function renderCourses(data) {
+    const tbody = document.getElementById('course-tbody');
+    tbody.innerHTML = '';
+    data.forEach(course => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${course.course_id}</td>
+            <td>${course.name}</td>
+            <td>${course.credits}</td>
+            <td><button class="btn danger" onclick="deleteCourse('${course.course_id}')">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function renderGrades(data) {
+    const tbody = document.getElementById('grade-tbody');
+    tbody.innerHTML = '';
+    data.forEach(grade => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${grade.student_id}</td>
+            <td>${grade.course_id}</td>
+            <td>${grade.score}</td>
+            <td><button class="btn danger" onclick="deleteGrade('${grade.student_id}', '${grade.course_id}')">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -26,20 +80,16 @@ async function loadStudents() {
     try {
         const res = await fetch(`${API_BASE}/students`);
         const data = await res.json();
-        const tbody = document.getElementById('stu-tbody');
-        tbody.innerHTML = '';
-        data.forEach(stu => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${stu.student_id}</td>
-                <td>${stu.name}</td>
-                <td>${stu.grade}</td>
-                <td><button class="btn danger" onclick="deleteStudent('${stu.student_id}')">Delete</button></td>
-            `;
-            tbody.appendChild(tr);
-        });
+        saveCache('students', data);
+        renderStudents(data);
     } catch (err) {
-        showMessage('Failed to load students', false);
+        const cached = loadCache('students');
+        if (cached.length > 0) {
+            renderStudents(cached);
+            showMessage('Loaded from local cache', true);
+        } else {
+            showMessage('Failed to load students', false);
+        }
     }
 }
 
@@ -109,20 +159,16 @@ async function loadCourses() {
     try {
         const res = await fetch(`${API_BASE}/courses`);
         const data = await res.json();
-        const tbody = document.getElementById('course-tbody');
-        tbody.innerHTML = '';
-        data.forEach(course => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${course.course_id}</td>
-                <td>${course.name}</td>
-                <td>${course.credits}</td>
-                <td><button class="btn danger" onclick="deleteCourse('${course.course_id}')">Delete</button></td>
-            `;
-            tbody.appendChild(tr);
-        });
+        saveCache('courses', data);
+        renderCourses(data);
     } catch (err) {
-        showMessage('Failed to load courses', false);
+        const cached = loadCache('courses');
+        if (cached.length > 0) {
+            renderCourses(cached);
+            showMessage('Loaded from local cache', true);
+        } else {
+            showMessage('Failed to load courses', false);
+        }
     }
 }
 
@@ -192,20 +238,16 @@ async function loadGrades() {
     try {
         const res = await fetch(`${API_BASE}/grades`);
         const data = await res.json();
-        const tbody = document.getElementById('grade-tbody');
-        tbody.innerHTML = '';
-        data.forEach(grade => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${grade.student_id}</td>
-                <td>${grade.course_id}</td>
-                <td>${grade.score}</td>
-                <td><button class="btn danger" onclick="deleteGrade('${grade.student_id}', '${grade.course_id}')">Delete</button></td>
-            `;
-            tbody.appendChild(tr);
-        });
+        saveCache('grades', data);
+        renderGrades(data);
     } catch (err) {
-        showMessage('Failed to load grades', false);
+        const cached = loadCache('grades');
+        if (cached.length > 0) {
+            renderGrades(cached);
+            showMessage('Loaded from local cache', true);
+        } else {
+            showMessage('Failed to load grades', false);
+        }
     }
 }
 

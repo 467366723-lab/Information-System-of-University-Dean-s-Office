@@ -1,2 +1,1 @@
-C001,Computer Science Introduction,3
-C002,Advanced Mathematics,4
+C001,Math,4
